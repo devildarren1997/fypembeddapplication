@@ -22,7 +22,7 @@ public class PixelExtensionEmbed {
 	private static int width = 0;
     private static int height = 0;
     private static int[][] newValues = null;
-    private static int minBright = 190;
+    private static int minBright = 100;
     private static int length = 4;
     private static String binaryToBeEmbed;
     private String encryptedInformation;
@@ -65,7 +65,12 @@ public class PixelExtensionEmbed {
         newValues = new int[width][height];
         binaryToBeEmbed = convertStringToBinary(encryptedInformation);
         
-       
+//       try 
+//       {
+//    	   ImageIO.write(loadImage, "jpg", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/original.jpg"));
+//       }catch(IOException e) {
+//    	   exceptionMessage.add(e.getMessage());
+//       }
         
         if(loadImage.equals(null)) {
         	errorMessage.add("Error 100. Fail to get Image input in PixelExtension");
@@ -83,7 +88,7 @@ public class PixelExtensionEmbed {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         
         try {
-        	ImageIO.write(loadImage, "png", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/ImageSampleGlitch3.png"));
+        	ImageIO.write(loadImage, "png", new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/ImageSampleGlitch.png"));
             ImageIO.write(loadImage, "png", outputStream);
             byte[] imageBytes = outputStream.toByteArray();
             imageString = new String(Base64.getEncoder().encode(imageBytes),"UTF-8");
@@ -98,6 +103,13 @@ public class PixelExtensionEmbed {
     public String PixelExtensionExtraction() {
     	BufferedImage loadImage = null;
     	loadImage = convertBase64ToImage(embeddedImageBase64);
+    	try {
+    		ImageIO.write(loadImage, "png", new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/ImageSampleGlitchExtract.png"));
+    	}
+    	catch(IOException e){
+    		System.out.println(e);
+    	}
+    	
     	width = loadImage.getWidth();
         height = loadImage.getHeight();
         String binaryString = "";
@@ -123,23 +135,26 @@ public class PixelExtensionEmbed {
                         counter++;
                     } else {
                         int preAV = Math.round(((redCompare + greenCompare + blueCompare) / 3));
-//                        System.out.println(red + " " + redCompare + " " + green + " " + greenCompare + " " + blue + " " + blueCompare + " " + preAV);
-                        boolean check = redCompare == red && greenCompare == green && blueCompare == blue;
-//                        System.out.println(i + " " + j + " " + check + " " + counter + " " + (preAV >= minBright && check));
-                        if (preAV >= minBright && check) {
-                            counter++;
-                        } else {
-                            if (counter == 91) {
-                                binaryString = binaryString + '0';
-                            } else if (counter == 120) {
-                                binaryString = binaryString + '1';
-                            }
-                            redCompare = red;
-                            greenCompare = green;
-                            blueCompare = blue;
-                            counter = 1;
-                        }
-                    }
+//                      System.out.println(red + " " + redCompare + " " + green + " " + greenCompare + " " + blue + " " + blueCompare + " " + preAV);
+                      boolean check = redCompare == red && greenCompare == green && blueCompare == blue;
+//                      System.out.println(i + " " + j + " " + check + " " + counter + " " + (preAV >= minBright && check));
+                      if (preAV >= minBright && check) {
+//                      	System.out.println("We found a bit in: i " +i + " and j " + j);
+                          counter++;
+                      } else {
+                          if (counter == 101) {
+                              binaryString = binaryString + '0';
+                              break;
+                          } else if (counter == 130) {
+                              binaryString = binaryString + '1';
+                              break;
+                          }
+                          redCompare = red;
+                          greenCompare = green;
+                          blueCompare = blue;
+                          counter = 1;
+                      }
+                  }
                 }// j != 0
             }// j loop
         }// i loop
@@ -148,68 +163,80 @@ public class PixelExtensionEmbed {
         return convertedBinary;
     }
     
+    
     public static void distort(BufferedImage image, String binaryToEmbed) {
-
-        int max = 10;
-
-        Random random = new Random();
+//        int count = 0;
+//        int max = 10;
+        int counti = 0;
         String binaryNeedsToEmbed = binaryToEmbed;
 
         for (int i = 0; i < width; i++) {
 
-
             int maxV = 0;
             Boolean embedded = false;
             int redEmbed = 0, greenEmbed = 0, blueEmbed = 0;
+            int previousRedEmbed = -1, previousGreenEmbed = -1, previousBlueEmbed = -1;
+            boolean justEmbed = false;
 
             for (int j = 0; j < height; j++) {
                 Color colour = new Color(image.getRGB(i, j));
                 int red = colour.getRed();
                 int green = colour.getGreen();
                 int blue = colour.getBlue();
+                if(previousRedEmbed == redEmbed && 
+                            previousGreenEmbed == greenEmbed &&
+                            previousBlueEmbed == blueEmbed){
+                    red -= 3;
+                    green -= 3;
+                    blue -= 3;
+                    previousRedEmbed = -1;
+                    previousGreenEmbed = -1;
+                    previousBlueEmbed = -1;
+                }
 
                 if (j != 0) {
                     int preAV = Math.round(((red + green + blue) / 3));
 
                     if (preAV >= minBright && embedded == false && binaryNeedsToEmbed.length() > 0) {
 
-                        System.out.println("We fullfill the length and firstextension true at the i : " + i + "and j " + j);
+//                        System.out.println("We fullfill the length and firstextension true at the i : " + i + "and j " + j);
 
-                        if (j < (height * 0.8)) {
-                            System.out.println("We embed a binary");
+                        if (j < (height * 0.9)) {
+                            counti++;
+//                            System.out.println("We embed a binary");
                             String binaryEmbed = binaryNeedsToEmbed;
                             char binarybit = binaryEmbed.charAt(0);
 
                             if (binarybit == '0') {
-                                maxV = 91;
-                                System.out.println("The length embed is " + maxV);
+                                maxV = 101;
+//                                System.out.println("The length embed is " + maxV);
                             } else if (binarybit == '1') {
-                                maxV = 120;
-                                System.out.println("The length embed is " + maxV);
+                                maxV = 130;
+//                                System.out.println("The length embed is " + maxV);
                             }
                             redEmbed = red;
                             blueEmbed = blue;
                             greenEmbed = green;
                             embedded = true;
+                            justEmbed = true;
                         }// if j fulfill height condition
-                    }else if(preAV >= minBright && maxV == 0){
+                    }
+                    else if(preAV >= minBright && maxV == 0){
 
-                        if (j < (height * 0.8)) {
-                        	max = preAV - minBright;
-                        	maxV = (int)Math.round(max*length);
-                            
-                        	if(maxV >= 70 &&  maxV <= 130) {
-                        		do{
-                                    maxV = random.nextInt(50) + 1;
-                                }while(maxV >= 80 && maxV <= 130);
-                        	}
-                            
+                        if (j < (height * 0.9) && !justEmbed) {
+                            Random rand = new Random();
+                            do{
+                                maxV = rand.nextInt(50) + 1;
+                            }while(maxV >= 90 && maxV <= 110 || maxV >= 120 && maxV <= 140);
+//                            System.out.println("maxV: " + maxV);
                             redEmbed = red;
                             blueEmbed = blue;
                             greenEmbed = green;
                         }// if j fulfill height condition
+                        else{
+                            justEmbed = false;
+                        }
                     }
-                    
 
                     if (maxV > 0) {
 
@@ -217,6 +244,12 @@ public class PixelExtensionEmbed {
                         newValues[i][j] = col;
 //                        System.out.println(i + " " + j + " " + redEmbed + " " + greenEmbed + " " + blueEmbed);
                         maxV--;
+                        if(maxV == 0){
+                            previousRedEmbed = redEmbed;
+                            previousGreenEmbed = greenEmbed;
+                            previousBlueEmbed = blueEmbed;
+                            justEmbed = true;
+                        }
                     }
                     else{
                         int col = (red << 16 | green << 8 | blue);
@@ -225,12 +258,98 @@ public class PixelExtensionEmbed {
                 }// if j != 0
 
             } // j loop
-            if (binaryNeedsToEmbed.length() != 0 && embedded == true) {
+            if (binaryNeedsToEmbed.length() != 0) {
                 binaryNeedsToEmbed = binaryNeedsToEmbed.substring(1);
-                System.out.println("The binary left" + binaryNeedsToEmbed.length());
+//                System.out.println("The binary left" + binaryNeedsToEmbed.length());
             }
         } // i loop
-    }
+//        System.out.println("count i: " + counti);
+    }// distortImage
+    
+//    public static void distort(BufferedImage image, String binaryToEmbed) {
+//
+//        int max = 10;
+//
+//        Random random = new Random();
+//        String binaryNeedsToEmbed = binaryToEmbed;
+//
+//        for (int i = 0; i < width; i++) {
+//
+//
+//            int maxV = 0;
+//            Boolean embedded = false;
+//            int redEmbed = 0, greenEmbed = 0, blueEmbed = 0;
+//
+//            for (int j = 0; j < height; j++) {
+//                Color colour = new Color(image.getRGB(i, j));
+//                int red = colour.getRed();
+//                int green = colour.getGreen();
+//                int blue = colour.getBlue();
+//
+//                if (j != 0) {
+//                    int preAV = Math.round(((red + green + blue) / 3));
+//
+//                    if (preAV >= minBright && embedded == false && binaryNeedsToEmbed.length() > 0) {
+//
+//                        System.out.println("We fullfill the length and firstextension true at the i : " + i + "and j " + j);
+//
+//                        if (j < (height * 0.8)) {
+//                            System.out.println("We embed a binary");
+//                            String binaryEmbed = binaryNeedsToEmbed;
+//                            char binarybit = binaryEmbed.charAt(0);
+//
+//                            if (binarybit == '0') {
+//                                maxV = 11;
+//                                System.out.println("The length embed is " + maxV);
+//                            } else if (binarybit == '1') {
+//                                maxV = 30;
+//                                System.out.println("The length embed is " + maxV);
+//                            }
+//                            redEmbed = red;
+//                            blueEmbed = blue;
+//                            greenEmbed = green;
+//                            embedded = true;
+//                        }// if j fulfill height condition
+//                    }
+////                    else if(preAV >= minBright && maxV == 0){
+////
+////                        if (j < (height * 0.8)) {
+////                        	max = preAV - minBright;
+////                        	maxV = (int)Math.round(max*length);
+////                            
+////                        	if(maxV >= 70 &&  maxV <= 130) {
+////                        		do{
+////                                    maxV = random.nextInt(50) + 1;
+////                                }while(maxV >= 80 && maxV <= 130);
+////                        	}
+////                            
+////                            redEmbed = red;
+////                            blueEmbed = blue;
+////                            greenEmbed = green;
+////                        }// if j fulfill height condition
+////                    }
+//                    
+//
+//                    if (maxV > 0) {
+//
+//                        int col = (redEmbed << 16 | greenEmbed << 8 | blueEmbed);
+//                        newValues[i][j] = col;
+////                        System.out.println(i + " " + j + " " + redEmbed + " " + greenEmbed + " " + blueEmbed);
+//                        maxV--;
+//                    }
+//                    else{
+//                        int col = (red << 16 | green << 8 | blue);
+//                        newValues[i][j] = col;
+//                    }
+//                }// if j != 0
+//
+//            } // j loop
+//            if (binaryNeedsToEmbed.length() != 0 && embedded == true) {
+//                binaryNeedsToEmbed = binaryNeedsToEmbed.substring(1);
+//                System.out.println("The binary left" + binaryNeedsToEmbed.length());
+//            }
+//        } // i loop
+//    }
     
     private BufferedImage convertBase64ToImage(String inputImageBase64) {
     	byte[] decodedBytes = Base64.getDecoder().decode(inputImageBase64);
