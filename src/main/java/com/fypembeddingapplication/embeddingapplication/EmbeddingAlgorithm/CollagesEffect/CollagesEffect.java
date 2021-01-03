@@ -176,13 +176,20 @@ public class CollagesEffect {
         	}
         }
     	
-    	String convertedBinary = convertBinaryToString(binaryString);
-    	
-    	if(convertedBinary == null) {
-        	errorMessage.add("Error code 104. Fail to convert the binary string from image input to correct binary" );
+    	if(binaryString.length() < 10 || binaryString == null) {
+        	errorMessage.add("Error 101. Fail to get the binaryString embedded into the image.");
+        	System.out.println("we return null");
+        	return "0";
         }
-    	
-    	return convertedBinary;
+        else if(binaryString.length() == 192 || binaryString.length() == 352) {
+        	String convertedBinary = convertBinaryToString(binaryString);
+            return convertedBinary;
+        }
+        else {
+        	errorMessage.add("Error 102. Fail to get complete binaryString embedded into the image.");
+        	System.out.println("we return error");
+        	return "Error102";
+        }
 	}
 	
 	

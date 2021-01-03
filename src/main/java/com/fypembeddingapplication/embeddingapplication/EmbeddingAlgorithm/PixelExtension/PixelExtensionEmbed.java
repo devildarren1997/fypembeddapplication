@@ -159,8 +159,21 @@ public class PixelExtensionEmbed {
             }// j loop
         }// i loop
         System.out.println("This is the binaryString: " + binaryString);
-        String convertedBinary = convertBinaryToString(binaryString);
-        return convertedBinary;
+        if(binaryString.length() < 10 || binaryString == null) {
+        	errorMessage.add("Error 101. Fail to get the binaryString embedded into the image.");
+        	System.out.println("we return null");
+        	return "0";
+        }
+        else if(binaryString.length() == 192 || binaryString.length() == 352) {
+        	String convertedBinary = convertBinaryToString(binaryString);
+            return convertedBinary;
+        }
+        else {
+        	errorMessage.add("Error 102. Fail to get complete binaryString embedded into the image.");
+        	System.out.println("we return error");
+        	return "Error102";
+        }
+        
     }
     
     

@@ -470,18 +470,30 @@ public class uploadImageForEmbedded {
                         errorMessage.add("Error code 301. Fail to extract information");
                     }
                     else {
-                        ASEEncryption aseEncryption = new ASEEncryption();
-                        String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
-                        String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
-                        jsonOutPut.put("status","s");
-                        jsonOutPut.put("hiddenInformation",hiddenInformation);
+                    	if(extractedString.equalsIgnoreCase("error102")) {
+                    		jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                    	}
+                    	else{
+                    		ASEEncryption aseEncryption = new ASEEncryption();
+                            String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
+                            String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
+                            jsonOutPut.put("status","s");
+                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                    	} 
                     }
                 }
             	else {
-                    ASEEncryption aseEncryption = new ASEEncryption();
-                    String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                    jsonOutPut.put("status","s");
-                    jsonOutPut.put("hiddenInformation",hiddenInformation);
+            		if(extractedString.equalsIgnoreCase("error102")){
+            			jsonOutPut.put("status","f");
+                        errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+            		}
+            		else {
+            			 ASEEncryption aseEncryption = new ASEEncryption();
+                         String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
+                         jsonOutPut.put("status","s");
+                         jsonOutPut.put("hiddenInformation",hiddenInformation);
+            		}
                 }
             }
             else if(filter.equalsIgnoreCase("collageseffect")) {
@@ -495,18 +507,29 @@ public class uploadImageForEmbedded {
                         errorMessage.add("Error code 301. Fail to extract information");
                     }
                     else {
-                        ASEEncryption aseEncryption = new ASEEncryption();
-                        String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
-                        String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
-                        jsonOutPut.put("status","s");
-                        jsonOutPut.put("hiddenInformation",hiddenInformation);
+                    	if(extractedString.equalsIgnoreCase("error102")){
+                			jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                		}
+                		else {
+                			 ASEEncryption aseEncryption = new ASEEncryption();
+                             String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
+                             jsonOutPut.put("status","s");
+                             jsonOutPut.put("hiddenInformation",hiddenInformation);
+                		}
                     }
                 }
             	else {
-                    ASEEncryption aseEncryption = new ASEEncryption();
-                    String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                    jsonOutPut.put("status","s");
-                    jsonOutPut.put("hiddenInformation",hiddenInformation);
+            		if(extractedString.equalsIgnoreCase("error102")){
+            			jsonOutPut.put("status","f");
+                        errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+            		}
+            		else {
+            			 ASEEncryption aseEncryption = new ASEEncryption();
+                         String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
+                         jsonOutPut.put("status","s");
+                         jsonOutPut.put("hiddenInformation",hiddenInformation);
+            		}
                 }
             }
 
