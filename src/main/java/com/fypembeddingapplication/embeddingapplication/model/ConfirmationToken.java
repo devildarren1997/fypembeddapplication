@@ -2,6 +2,7 @@ package com.fypembeddingapplication.embeddingapplication.model;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Random;
 
 @Entity
@@ -14,15 +15,14 @@ public class ConfirmationToken {
     private Long Id;
     @Column(name = "confirmation_token")
     private String confirmationToken;
-    @Column(name = "created_date")
-    private LocalDate createdDate;
-    @OneToOne(targetEntity = User.class,fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false,name = "id")
-    private User user;
+    @Column(name = "expired_datetime")
+    private LocalDateTime expiredDatetime;
+    @Column(name = "email")
+    private String email;
 
-   public ConfirmationToken(User user){
-        this.user =user;
-        this.createdDate =LocalDate.now();
+   public ConfirmationToken(String email){
+        this.email =email;
+        this.expiredDatetime =LocalDateTime.now().plusMinutes(5);
         this.confirmationToken = generateToken();
     }
     public ConfirmationToken(){super();}
@@ -44,20 +44,20 @@ public class ConfirmationToken {
         this.confirmationToken = confirmationToken;
     }
 
-    public LocalDate getCreatedDate() {
-        return createdDate;
+    public LocalDateTime getExpiredDatetime() {
+        return expiredDatetime;
     }
 
-    public void setCreatedDate(LocalDate createdDate) {
-        this.createdDate = createdDate;
+    public void setExpiredDatetime(LocalDateTime expiredDatetime) {
+        this.expiredDatetime = expiredDatetime;
     }
 
-    public User getUser() {
-        return user;
+    public String getEmail() {
+        return email;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setEmail(String userId) {
+        this.email = userId;
     }
 
     public String generateToken(){

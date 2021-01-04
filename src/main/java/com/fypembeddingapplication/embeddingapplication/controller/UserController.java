@@ -76,8 +76,15 @@ public class UserController {
             String token = requestForConfirmUser.getToken();
             ConfirmationToken confirmationToken =confirmationTokenService.findConfirmationToken(token);
             if (confirmationToken!=null){
-                userService.confirmUser(confirmationToken);
-                jsonBody.put("confirm_user","success");
+                int indicator=userService.confirmUser(confirmationToken);
+                if (indicator==1){
+                    jsonBody.put("confirm_user","success");
+                }else if (indicator==2){
+                    jsonBody.put("confirm_user","fail");
+                    errorMessage.add("Error 101. Error occur at database");
+                }else{
+                    exceptionMessage.add("Exception occur");
+                }
             }else {
                 jsonBody.put("confirm_user","fail");
                 errorMessage.add("Wrong confirmation token");
@@ -176,9 +183,18 @@ public class UserController {
             requestForConfirmUser requestForConfirmUser = mapper.readValue(jsonString, requestForConfirmUser.class);
             String token = requestForConfirmUser.getToken();
             ConfirmationToken confirmationToken =confirmationTokenService.findConfirmationToken(token);
+            System.out.println(confirmationToken==null);
             if (confirmationToken!=null){
-                userService.confirmChangingPassword(confirmationToken);
-                jsonBody.put("confirm_change_password","success");
+                int indicator=userService.confirmChangingPassword(confirmationToken);
+                if (indicator==1){
+                    jsonBody.put("confirm_change_password","success");
+                }else if (indicator==2){
+                    jsonBody.put("confirm_change_password","fail");
+                    errorMessage.add("Error 101. Error occur at database");
+                }else{
+                    exceptionMessage.add("Exception occur");
+                }
+
             }else {
                 jsonBody.put("confirm_change_password","fail");
                 errorMessage.add("Wrong confirmation token");
@@ -227,4 +243,5 @@ public class UserController {
         jsonBody.put("errorMessage",errorMessage);
         return jsonBody.returmMap();
     }
+
 }

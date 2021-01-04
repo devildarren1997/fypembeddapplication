@@ -5,6 +5,9 @@ import com.fypembeddingapplication.embeddingapplication.model.ConfirmationToken;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 @Service
 @AllArgsConstructor
@@ -23,4 +26,14 @@ public class ConfirmationTokenService {
        }else
            return null;
     }
+    public List<ConfirmationToken> getAllExpired(){
+        LocalDateTime now = LocalDateTime.now();
+        Optional<List<ConfirmationToken>> confirmationTokens= confirmationTokenRepository.getAllExpired(now);
+        if (confirmationTokens.isPresent()){
+            return confirmationTokens.get();
+        }else {
+            return null;
+        }
+    }
+
 }

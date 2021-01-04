@@ -8,8 +8,12 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -34,7 +38,7 @@ public class UserService{
         }else {
            User user = new User(email,username,encryptedPassword,username);
            userRepository.save(user);
-           ConfirmationToken confirmationToken = new ConfirmationToken(user);
+           ConfirmationToken confirmationToken = new ConfirmationToken(email);
            confirmationTokenService.saveConfirmationToken(confirmationToken);
            int sendEmailIndicator=sendConfirmationMail(email,confirmationToken.getConfirmationToken(),1);
            if (sendEmailIndicator==1){
@@ -76,22 +80,46 @@ public class UserService{
             return 2;
         }
     }
-   public void confirmUser (ConfirmationToken confirmationToken){
-        User user = confirmationToken.getUser();
-        user.setEnabled(true);
-        userRepository.save(user);
-        confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+   public int confirmUser (ConfirmationToken confirmationToken){
+        try{
+            String email=confirmationToken.getEmail();
+            Optional<User> optionalUser = userRepository.findByEmail(email);
+            if (optionalUser.isPresent()){
+                User user=optionalUser.get();
+                user.setEnabled(true);
+                userRepository.save(user);
+                confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+                return 1;
+            }else{
+                return 2;
+            }
+        }catch (Exception e){
+            return 3;
+        }
     }
-    public void confirmChangingPassword (ConfirmationToken confirmationToken){
-        User user = confirmationToken.getUser();
-        user.setChanging(true);
-        userRepository.save(user);
-        confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+    public int confirmChangingPassword (ConfirmationToken confirmationToken){
+
+            try{
+                String email=confirmationToken.getEmail();
+                Optional<User> optionalUser = userRepository.findByEmail(email);
+                if (optionalUser.isPresent()){
+                    User user=optionalUser.get();
+                    user.setChanging(true);
+                    userRepository.save(user);
+                    confirmationTokenService.deleteConfirmationToken(confirmationToken.getId());
+                    return 1;
+                }else{
+                    return 2;
+                }
+            }catch (Exception e){
+                return 3;
+            }
+
     }
     public int forgetPassword (String email){
         Optional <User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()){
-            ConfirmationToken confirmationToken = new ConfirmationToken(optionalUser.get());
+            ConfirmationToken confirmationToken = new ConfirmationToken(optionalUser.get().getEmail());
             confirmationTokenService.saveConfirmationToken(confirmationToken);
             int emailIndicator=sendConfirmationMail(email,confirmationToken.getConfirmationToken(),2);
             if (emailIndicator==1){
@@ -99,7 +127,6 @@ public class UserService{
             }else {
                 return 2;
             }
-
         }else {
             return 3;
         }
@@ -143,5 +170,11 @@ public class UserService{
     public String getToken(String email){
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.get().getToken();
+    }
+
+    @Scheduled(cron ="0 */5 * ? * *")
+    public void clearExpired(){
+        LocalDateTime now = LocalDateTime.now();
+        List<ConfirmationToken>confirmationTokens=confirmationTokenService.getAllExpired();
     }
 }
