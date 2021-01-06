@@ -86,7 +86,7 @@ public class PencilPaintEmbed {
             pixels = convertToPixels(target);
         }
         if (pixels==null){
-            errorMessage.add("Error code 103. Fail to apply Pencil Paint watermark to your image");
+            errorMessage.add("Error code 303. Fail to apply Pencil Paint watermark to your image");
         }
         for (int i=0;i<pixels.length;i=i+8){
 
@@ -114,7 +114,7 @@ public class PencilPaintEmbed {
                 }
             }else {
                 if (binaryCode.size()>0){
-                    errorMessage.add("Error code 104. Your watermark information is too long");
+                    errorMessage.add("Error code 304. Your watermark information is too long");
                 }
             }
 

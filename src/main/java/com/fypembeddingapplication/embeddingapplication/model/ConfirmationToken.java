@@ -22,7 +22,9 @@ public class ConfirmationToken {
 
    public ConfirmationToken(String email){
         this.email =email;
+
         this.expiredDatetime =LocalDateTime.now().plusMinutes(5);
+        System.out.println(expiredDatetime);
         this.confirmationToken = generateToken();
     }
     public ConfirmationToken(){super();}

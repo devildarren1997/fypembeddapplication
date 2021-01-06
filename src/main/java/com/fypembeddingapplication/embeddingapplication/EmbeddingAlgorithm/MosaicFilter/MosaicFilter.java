@@ -278,8 +278,8 @@ public class MosaicFilter {
                 index++;
             }
         }
-        if(embeddedList.size()==0){
-            System.out.println("All data has been embedded");
+        if(embeddedList.size()!=0){
+            return null;
         }
         return outPixels;
     }

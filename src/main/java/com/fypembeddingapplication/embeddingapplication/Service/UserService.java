@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -172,10 +173,31 @@ public class UserService{
         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser.get().getToken();
     }
-
-    @Scheduled(cron ="0 */5 * ? * *")
+    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(cron ="0/30 * * ? * *")
     public void clearExpired(){
-        LocalDateTime now = LocalDateTime.now();
         List<ConfirmationToken>confirmationTokens=confirmationTokenService.getAllExpired();
+        System.out.println(LocalDateTime.now());
+        if (confirmationTokens!=null){
+            for (int i =0;i<confirmationTokens.size();i++){
+                String email=confirmationTokens.get(i).getEmail();
+                Long id =confirmationTokens.get(i).getId();
+                Optional<User> optionalUser = userRepository.findByEmail(email);
+                if (optionalUser.isPresent()){
+                    if (optionalUser.get().isEnabled()){
+                        confirmationTokenService.deleteConfirmationToken(id);
+                    }else if (!optionalUser.get().isEnabled()){
+                        confirmationTokenService.deleteConfirmationToken(id);
+                        userRepository.deleteByEmail(email);
+                    }else if (optionalUser.get().isChanging()){
+                        confirmationTokenService.deleteConfirmationToken(id);
+                        optionalUser.get().setChanging(false);
+                        userRepository.save(optionalUser.get());
+                    }else if (!optionalUser.get().isChanging()){
+                        confirmationTokenService.deleteConfirmationToken(id);
+                    }
+                }
+            }
+        }
     }
 }

@@ -46,13 +46,15 @@ public class UserController {
                 jsonBody.put("sign_up","success");
             }else if (indicator ==1){
                 jsonBody.put("sign_up","fail");
-                errorMessage.add("Account registered.");
+                //Error Code 201.
+                errorMessage.add("Account has registered.");
             }else if(indicator ==2){
                 jsonBody.put("sign_up","fail");
+                //Error Code 202.
                 errorMessage.add("You have registered the account before. Please go to your email to active the account.");
             }else if (indicator ==4){
                 jsonBody.put("sign_up","fail");
-                errorMessage.add("Something wrong with the Email server. Please contact us.");
+                errorMessage.add("Error Code 102. Something wrong with the Email server. Please contact us.");
             }
 
         }catch (Exception e){
@@ -84,13 +86,14 @@ public class UserController {
                     jsonBody.put("confirm_user","success");
                 }else if (indicator==2){
                     jsonBody.put("confirm_user","fail");
-                    errorMessage.add("Error 101. Error occur at database");
+                    errorMessage.add("Error Code 101. Error occur at database");
                 }else{
                     exceptionMessage.add("Exception occur");
                 }
             }else {
                 jsonBody.put("confirm_user","fail");
-                errorMessage.add("Wrong confirmation token");
+                //Error Code 203.
+                errorMessage.add(" Wrong confirmation token or confirmation token has expired");
             }
 
         }catch (Exception e){
@@ -126,10 +129,12 @@ public class UserController {
             }
             else if (indicator==2){
                 jsonBody.put("sign_in","fail");
-                errorMessage.add("Error . Account has not been active yet.");
+                //Error Code 204.
+                errorMessage.add(" Account has not been active yet.");
             }else if (indicator==3){
                 jsonBody.put("sign_in","fail");
-                errorMessage.add("Error . Wrong email or password");
+                //Error Code 205.
+                errorMessage.add(" Wrong email or password");
             }
         }catch (Exception e){
             exceptionMessage.add(e.getMessage());
@@ -158,10 +163,11 @@ public class UserController {
                 jsonBody.put("forget_password","success");
             }else if (indicator==2){
                 jsonBody.put("forget_password","fail");
-                errorMessage.add("Error .Something wrong with the Email server. Please contact us.");
+                errorMessage.add("Error Code 102.Something wrong with the Email server. Please contact us.");
             }else if (indicator==3){
                 jsonBody.put("forget_password","fail");
-                errorMessage.add("Error .This email does not exist");
+                //Error Code 206.
+                errorMessage.add("This email does not exist");
             }
         }catch (Exception e){
             exceptionMessage.add(e.getMessage());
@@ -193,14 +199,15 @@ public class UserController {
                     jsonBody.put("confirm_change_password","success");
                 }else if (indicator==2){
                     jsonBody.put("confirm_change_password","fail");
-                    errorMessage.add("Error 101. Error occur at database");
+                    errorMessage.add("Error Code 101. Error occur at database");
                 }else{
                     exceptionMessage.add("Exception occur");
                 }
 
             }else {
                 jsonBody.put("confirm_change_password","fail");
-                errorMessage.add("Wrong confirmation token");
+                //Error Code 203.
+                errorMessage.add("Wrong confirmation token or confirmation token is expired");
             }
 
         }catch (Exception e){
@@ -231,10 +238,11 @@ public class UserController {
                 jsonBody.put("change_password","success");
             }else if (indicator==2){
                 jsonBody.put("change_password","fail");
-                errorMessage.add("Error . Your new password should be same as old password.");
+                //Error Code 207.
+                errorMessage.add("Your new password should be same as old password.");
             }else if (indicator==3){
                 jsonBody.put("change_password","fail");
-                errorMessage.add("Error . Something wrong with database.");
+                errorMessage.add("Error Code 101. Error occur in Database");
             }
         }catch (Exception e){
             exceptionMessage.add(e.getMessage());

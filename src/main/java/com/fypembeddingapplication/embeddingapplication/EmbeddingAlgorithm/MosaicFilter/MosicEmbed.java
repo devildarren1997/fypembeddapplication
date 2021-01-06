@@ -211,15 +211,18 @@ public class MosicEmbed {
         filterInput input = converBase64ToPixels(URLImageBase64);
         MosaicFilter mosaicFilter=new MosaicFilter(getEmbeddedList(embeddedInformation));
         int pixelsMosaicFilter[]= mosaicFilter.filter(input.getInPixles(),input.getWidth(),input.getHeight());
+        if (pixelsMosaicFilter==null){
+            errorMessage.add("Error code 304. Your watermark information is too long");
+        }
         String outEmbeddedImageBase64=null;
         if(pixelsMosaicFilter.length==0){
-            errorMessage.add("Error code 103. Fail to apply Fragment Filter watermark to your image");
+            errorMessage.add("Error code 303. Fail to apply Fragment Filter watermark to your image");
         }
         else {
             outEmbeddedImageBase64=converPixelsToBase64(pixelsMosaicFilter,input.getHeight(),input.getWidth());
             this.setOutEmbeddedImageBase64(outEmbeddedImageBase64);
             if(outEmbeddedImageBase64==null){
-                errorMessage.add("Error code 103. Fail to apply Fragment Filter watermark to your image");
+                errorMessage.add("Error code 303. Fail to apply Fragment Filter watermark to your image");
             }
         }
 //        System.out.println("done");
@@ -267,7 +270,7 @@ public class MosicEmbed {
         }
 
         if (list1.size()!=list2.size()&&list1.size()!=list3.size()){
-            errorMessage.add("Error code 301. Fail to extract information");
+            errorMessage.add("Error code 401. Fail to extract information");
         }
         else {
             int[] binaryResult = new int[list1.size()];

@@ -1,14 +1,9 @@
 package com.fypembeddingapplication.embeddingapplication.controller;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.MosaicFilter.MosicEmbed;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.PencilPaintFilter.PencilPaintEmbed;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.PixelExtension.PixelExtensionEmbed;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.CollagesEffect.CollagesEffect;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.ResponseEntity.BodyBuilder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import com.fypembeddingapplication.embeddingapplication.database.EmbeddedDetailsRepository;
@@ -23,11 +18,9 @@ import com.fypembeddingapplication.embeddingapplication.model.User;
 import com.fypembeddingapplication.embeddingapplication.model.originalImage;
 import com.fypembeddingapplication.embeddingapplication.model.encryptionDetail;
 import com.fypembeddingapplication.embeddingapplication.model.tempTable;
-import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.MosaicFilter.Embedding;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.MosaicFilter.ImageCompress;
-import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.MosaicFilter.Extraction;
 import com.fypembeddingapplication.embeddingapplication.Encryption.ASEEncryption;
-import com.fypembeddingapplication.embeddingapplication.controller.JsonCustomized;
+
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.*;
@@ -111,7 +104,7 @@ public class uploadImageForEmbedded {
             }
             if (encryptedInformation==null){
                 jsonOutPut.put("status","f");
-                errorMessage.add("Error Code 102. Fail to encrypt your information. You may consider to change your watermark info");
+                errorMessage.add("Error Code 302. Fail to encrypt your information. You may consider to change your watermark info");
             }
             String imageCompressedOut=null;
             String imageOutPut=null;
@@ -122,7 +115,7 @@ public class uploadImageForEmbedded {
                 imageCompressedOut=compress.compress(imageOutPut);
                 if (imageCompressedOut==null&&imageOutPut!=null){
                     jsonOutPut.put("status","f");
-                    errorMessage.add("Error Code 105. Fail to generator a review image");
+                    errorMessage.add("Error Code 305. Fail to generator a review image");
                 }
                 if(mosicEmbed.getExceptionMessage().size()>0){
                     jsonOutPut.put("status","f");
@@ -149,7 +142,7 @@ public class uploadImageForEmbedded {
                 imageCompressedOut = compress.compress(imageOutPut);
                 if (imageCompressedOut==null&&imageOutPut!=null){
                     jsonOutPut.put("status","f");
-                    errorMessage.add("Error Code 105. Fail to generator a review image");
+                    errorMessage.add("Error Code 305. Fail to generator a review image");
                 }
                 if(pencilPaintEmbed.getExceptionMessage().size()>0){
                     exceptionMessage.addAll(pencilPaintEmbed.getExceptionMessage());
@@ -175,7 +168,7 @@ public class uploadImageForEmbedded {
             	imageCompressedOut = compress.compress(imageOutPut);
             	if(imageCompressedOut==null && imageOutPut!=null) {
             		jsonOutPut.put("status", "f");
-            		errorMessage.add("Error Code 105. Fail to generate a review image");
+            		errorMessage.add("Error Code 305. Fail to generate a review image");
             	}
             	if(pixelExtensionEmbed.getExceptionMessage().size()>0) {
             		exceptionMessage.addAll(pixelExtensionEmbed.getExceptionMessage());
@@ -201,7 +194,7 @@ public class uploadImageForEmbedded {
             	imageCompressedOut = compress.compress(imageOutPut);
             	if(imageCompressedOut==null && imageOutPut!=null) {
             		jsonOutPut.put("status", "f");
-            		errorMessage.add("Error Code 105. Fail to generate a review image");
+            		errorMessage.add("Error Code 305. Fail to generate a review image");
             	}
             	if(collagesEffect.getExceptionMessage().size()>0) {
             		exceptionMessage.addAll(collagesEffect.getExceptionMessage());
@@ -242,7 +235,7 @@ public class uploadImageForEmbedded {
             final Optional<tempTable> retrieveTempData = tempRepository.findByUserId(id);
             if(retrieveTempData.isPresent()){
                 jsonOutPut.put("status","f");
-                errorMessage.add("Error Code 106. Fail to get embedded image");
+                errorMessage.add("Error Code 306. Fail to get embedded image");
             }else {
                 tempTable tempTable = retrieveTempData.get();
                 jsonOutPut.put("embeddedImage",tempTable.getEmbeddedImageCompressedBase64());
@@ -268,7 +261,7 @@ public class uploadImageForEmbedded {
 
         if(!retrieveTempData.isPresent()){
             jsonOutPut.put("status","f");
-            errorMessage.add("Error Code 106. Fail to confirm embedded image");
+            errorMessage.add("Error Code 101.Error occur in database.");
         }
         else {
             tempTable tempTable =retrieveTempData.get();
@@ -336,7 +329,7 @@ public class uploadImageForEmbedded {
             }
             if (!tempRepository.findByUserId(id).isPresent()){
                 jsonOutPut.put("status","f");
-                errorMessage.add("Error Code 107.Fail to cancel the embedding process.");
+                errorMessage.add("Error Code 307.Fail to cancel the embedding process.");
             }
             else {
                 jsonOutPut.put("status","s");
@@ -409,10 +402,10 @@ public class uploadImageForEmbedded {
                     PencilPaintEmbed pencilPaintEmbed = new PencilPaintEmbed();
                     String extractedString = pencilPaintEmbed.extract(embeddedImage);
                     if (secondaryPassword==null){
-                        final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
+                        Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                         if (!retrieveEmbeddedDetails.isPresent()){
                             jsonOutPut.put("status","f");
-                            errorMessage.add("Error code 301. Fail to extract information");
+                            errorMessage.add("Error code 401. Fail to extract information");
                         }
                         else {
                             ASEEncryption aseEncryption = new ASEEncryption();
@@ -420,7 +413,7 @@ public class uploadImageForEmbedded {
                             if (encryptionKey==null){
                                 //Only the embedding without secondary password will have a null value encryptionKey
                                 jsonOutPut.put("status","f");
-                                errorMessage.add("Error code 302. Enter your secondary password");
+                                errorMessage.add("Error code 402. Enter your secondary password");
                             }else {
                                 String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
                                 jsonOutPut.put("status","s");
@@ -431,8 +424,14 @@ public class uploadImageForEmbedded {
                     }else{
                         ASEEncryption aseEncryption = new ASEEncryption();
                         String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                        jsonOutPut.put("status","s");
-                        jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        if (hiddenInformation==null){
+                            jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 403. You may enter a wrong secondary password");
+                        }else {
+                            jsonOutPut.put("status","s");
+                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        }
+
                     }
 
             }
@@ -440,23 +439,34 @@ public class uploadImageForEmbedded {
                 MosicEmbed mosicEmbed = new MosicEmbed(embeddedImage);
                 String extractedString = mosicEmbed.extraction();
                 if (secondaryPassword==null){
-                    final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
+                    Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
-                        errorMessage.add("Error code 301. Fail to extract information");
+                        errorMessage.add("Error code 401. Fail to extract information");
                     }
                     else {
                         ASEEncryption aseEncryption = new ASEEncryption();
                         String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
-                        String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
-                        jsonOutPut.put("status","s");
-                        jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        if (encryptionKey==null){
+                            //Only the embedding without secondary password will have a null value encryptionKey
+                            jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 402. Enter your secondary password");
+                        }else {
+                            String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
+                            jsonOutPut.put("status","s");
+                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        }
                     }
                 }else {
                     ASEEncryption aseEncryption = new ASEEncryption();
                     String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                    jsonOutPut.put("status","s");
-                    jsonOutPut.put("hiddenInformation",hiddenInformation);
+                    if (hiddenInformation==null){
+                        jsonOutPut.put("status","f");
+                        errorMessage.add("Error code 403. You may enter a wrong secondary password");
+                    }else {
+                        jsonOutPut.put("status","s");
+                        jsonOutPut.put("hiddenInformation",hiddenInformation);
+                    }
                 }
             }
             else if(filter.equalsIgnoreCase("pixelextension")) {
@@ -467,32 +477,43 @@ public class uploadImageForEmbedded {
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
-                        errorMessage.add("Error code 301. Fail to extract information");
+                        errorMessage.add("Error code 401. Fail to extract information");
                     }
                     else {
                     	if(extractedString.equalsIgnoreCase("error102")) {
                     		jsonOutPut.put("status","f");
-                            errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                            errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
                     	}
                     	else{
                     		ASEEncryption aseEncryption = new ASEEncryption();
                             String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
-                            String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
-                            jsonOutPut.put("status","s");
-                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                            if (encryptionKey==null){
+                                //Only the embedding without secondary password will have a null value encryptionKey
+                                jsonOutPut.put("status","f");
+                                errorMessage.add("Error code 402. Enter your secondary password");
+                            }else {
+                                String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
+                                jsonOutPut.put("status","s");
+                                jsonOutPut.put("hiddenInformation",hiddenInformation);
+                            }
                     	} 
                     }
                 }
             	else {
             		if(extractedString.equalsIgnoreCase("error102")){
             			jsonOutPut.put("status","f");
-                        errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                        errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
             		}
             		else {
             			 ASEEncryption aseEncryption = new ASEEncryption();
                          String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                         jsonOutPut.put("status","s");
-                         jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        if (hiddenInformation==null){
+                            jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 403. You may enter a wrong secondary password");
+                        }else {
+                            jsonOutPut.put("status","s");
+                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        }
             		}
                 }
             }
@@ -504,31 +525,43 @@ public class uploadImageForEmbedded {
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
-                        errorMessage.add("Error code 301. Fail to extract information");
+                        errorMessage.add("Error code 401. Fail to extract information");
                     }
                     else {
                     	if(extractedString.equalsIgnoreCase("error102")){
                 			jsonOutPut.put("status","f");
-                            errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                            errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
                 		}
                 		else {
                 			 ASEEncryption aseEncryption = new ASEEncryption();
-                             String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                             jsonOutPut.put("status","s");
-                             jsonOutPut.put("hiddenInformation",hiddenInformation);
+                            String encryptionKey =retrieveEmbeddedDetails.get().get(0).getEncryptionKey();
+                            if (encryptionKey==null){
+                                //Only the embedding without secondary password will have a null value encryptionKey
+                                jsonOutPut.put("status","f");
+                                errorMessage.add("Error code 402. Enter your secondary password");
+                            }else {
+                                String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
+                                jsonOutPut.put("status","s");
+                                jsonOutPut.put("hiddenInformation",hiddenInformation);
+                            }
                 		}
                     }
                 }
             	else {
             		if(extractedString.equalsIgnoreCase("error102")){
             			jsonOutPut.put("status","f");
-                        errorMessage.add("Error code 102. Fail to get complete binaryString embedded into the image.");
+                        errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
             		}
             		else {
             			 ASEEncryption aseEncryption = new ASEEncryption();
                          String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                         jsonOutPut.put("status","s");
-                         jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        if (hiddenInformation==null){
+                            jsonOutPut.put("status","f");
+                            errorMessage.add("Error code 403. You may enter a wrong secondary password");
+                        }else {
+                            jsonOutPut.put("status","s");
+                            jsonOutPut.put("hiddenInformation",hiddenInformation);
+                        }
             		}
                 }
             }
