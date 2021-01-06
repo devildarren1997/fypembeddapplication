@@ -140,6 +140,7 @@ public class UserService{
                     return 2;
                 }else {
                     optionalUser.get().setPassword(encryptedPassword);
+                    optionalUser.get().setChanging(false);
                     userRepository.save(optionalUser.get());
                     return 1;
                 }

@@ -325,11 +325,11 @@ public class PencilPaintEmbed {
         bGr.drawImage(image, 0, 0, null);
         bGr.dispose();
 
-        File outputPencilFilter=new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/input7PencilOut.png");
-        try{
-            ImageIO.write(bimage,"png",outputPencilFilter);
-        }
-        catch (IOException e){exceptionMessage.add(e.getMessage());}
+//        File outputPencilFilter=new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/input7PencilOut.png");
+//        try{
+//            ImageIO.write(bimage,"png",outputPencilFilter);
+//        }
+//        catch (IOException e){exceptionMessage.add(e.getMessage());}
 
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();

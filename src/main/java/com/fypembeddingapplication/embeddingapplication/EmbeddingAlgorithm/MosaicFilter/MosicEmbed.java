@@ -143,11 +143,11 @@ public class MosicEmbed {
         bGr.drawImage(image, 0, 0, null);
         bGr.dispose();
 
-        File outputPencilFilter=new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/input7MosicOut.png");
-        try{
-            ImageIO.write(bimage,"png",outputPencilFilter);
-        }
-        catch (IOException e){exceptionMessage.add(e.getMessage());}
+//        File outputPencilFilter=new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/input7MosicOut.png");
+//        try{
+//            ImageIO.write(bimage,"png",outputPencilFilter);
+//        }
+//        catch (IOException e){exceptionMessage.add(e.getMessage());}
 
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -222,7 +222,7 @@ public class MosicEmbed {
                 errorMessage.add("Error code 103. Fail to apply Fragment Filter watermark to your image");
             }
         }
-        System.out.println("done");
+//        System.out.println("done");
         return outEmbeddedImageBase64;
     }
     public String extraction (){

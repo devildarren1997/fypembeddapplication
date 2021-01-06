@@ -63,7 +63,7 @@ public class uploadImageForEmbedded {
         JsonOutput.getJson().setBody(body);
         return JsonOutput.getJson();
     }
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @PostMapping("/getTempEmbeddedImage")
     @ResponseBody
     public Map<String, Object> getTempEmbeddedImage(@RequestBody String allParams){
@@ -83,7 +83,7 @@ public class uploadImageForEmbedded {
             String imageName= request.getName() +"_" +timestamp.toString();
             ImageCompress compress = new ImageCompress();
             String imageCompressBase64 = compress.compress(imageBase64);
-            if (!tempRepository.findByUserId(userId).isEmpty()){
+            if (tempRepository.findByUserId(userId).isPresent()){
                 try {
                     tempRepository.deleteAllByUserId(userId);
                 }catch (Exception e){
@@ -284,7 +284,7 @@ public class uploadImageForEmbedded {
             }
             final Optional<embeddedImage> retrievedEmbeddedImageByName = embeddedImageRepository.findByName(tempTable.getEmbeddedImageName());
             Long embeddedImageId=null;
-            if (retrievedEmbeddedImageByName.isEmpty()){
+            if (!retrievedEmbeddedImageByName.isPresent()){
                 jsonOutPut.put("status","f");
                 errorMessage.add("Error Code 101.Error occur in database.");
             }else {
@@ -292,7 +292,7 @@ public class uploadImageForEmbedded {
             }
             final Optional<originalImage> retrievedOriginalImageByName = originalImageRepository.findByName(tempTable.getOriginalImageName());
             Long originalImageId=null;
-            if (retrievedOriginalImageByName.isEmpty()){
+            if (!retrievedOriginalImageByName.isPresent()){
                 jsonOutPut.put("status","f");
                 errorMessage.add("Error Code 101.Error occur in database.");
             }
@@ -323,7 +323,7 @@ public class uploadImageForEmbedded {
         ArrayList<String> exceptionMessage = new ArrayList<>();
         JsonCustomized<String,Object> jsonOutPut =new JsonCustomized<>();
         final Optional<tempTable> retrieveTempData = tempRepository.findByUserId(id);
-        if(retrieveTempData.isEmpty()){
+        if(!retrieveTempData.isPresent()){
             jsonOutPut.put("status","f");
             errorMessage.add("Error Code 101.Error occur in database.");
         }
@@ -334,7 +334,7 @@ public class uploadImageForEmbedded {
             }catch (Exception e){
                 exceptionMessage.add(e.getMessage());
             }
-            if (!tempRepository.findByUserId(id).isEmpty()){
+            if (!tempRepository.findByUserId(id).isPresent()){
                 jsonOutPut.put("status","f");
                 errorMessage.add("Error Code 107.Fail to cancel the embedding process.");
             }
@@ -410,7 +410,7 @@ public class uploadImageForEmbedded {
                     String extractedString = pencilPaintEmbed.extract(embeddedImage);
                     if (secondaryPassword==null){
                         final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
-                        if (retrieveEmbeddedDetails.isEmpty()){
+                        if (!retrieveEmbeddedDetails.isPresent()){
                             jsonOutPut.put("status","f");
                             errorMessage.add("Error code 301. Fail to extract information");
                         }
@@ -441,7 +441,7 @@ public class uploadImageForEmbedded {
                 String extractedString = mosicEmbed.extraction();
                 if (secondaryPassword==null){
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
-                    if (retrieveEmbeddedDetails.isEmpty()){
+                    if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
                         errorMessage.add("Error code 301. Fail to extract information");
                     }
@@ -465,7 +465,7 @@ public class uploadImageForEmbedded {
             	
             	if (secondaryPassword==null){
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
-                    if (retrieveEmbeddedDetails.isEmpty()){
+                    if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
                         errorMessage.add("Error code 301. Fail to extract information");
                     }
@@ -502,7 +502,7 @@ public class uploadImageForEmbedded {
             	
             	if (secondaryPassword==null){
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
-                    if (retrieveEmbeddedDetails.isEmpty()){
+                    if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
                         errorMessage.add("Error code 301. Fail to extract information");
                     }

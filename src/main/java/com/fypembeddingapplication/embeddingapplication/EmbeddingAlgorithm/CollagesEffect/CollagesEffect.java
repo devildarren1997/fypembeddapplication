@@ -143,7 +143,7 @@ public class CollagesEffect {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     	
         try {
-        	ImageIO.write(finalImg, "png", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/finalImg.png"));
+//        	ImageIO.write(finalImg, "png", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/finalImg.png"));
         	ImageIO.write(finalImg, "png", outputStream);
         	byte[] imageBytes = outputStream.toByteArray();
         	imageString = new String(Base64.getEncoder().encode(imageBytes),"UTF-8");
@@ -178,7 +178,7 @@ public class CollagesEffect {
     	
     	if(binaryString.length() < 10 || binaryString == null) {
         	errorMessage.add("Error 101. Fail to get the binaryString embedded into the image.");
-        	System.out.println("we return null");
+//        	System.out.println("we return null");
         	return "0";
         }
         else if(binaryString.length() == 192 || binaryString.length() == 352) {
@@ -187,7 +187,7 @@ public class CollagesEffect {
         }
         else {
         	errorMessage.add("Error 102. Fail to get complete binaryString embedded into the image.");
-        	System.out.println("we return error");
+//        	System.out.println("we return error");
         	return "Error102";
         }
 	}
@@ -256,11 +256,12 @@ public class CollagesEffect {
             binaryBase64co.add(stringToDecrypt.substring(index, Math.min(index+8, stringToDecrypt.length())));
             index += 8;
         }
-        String correctBinary = binaryBase64co.stream().collect(Collectors.joining(" ")); 
+        String correctBinary = binaryBase64co.stream().collect(Collectors.joining(" "));
 		String stringBase64 = Arrays.stream(correctBinary.split(" "))
                 .map(binary -> Integer.parseInt(binary, 2)).map(Character::toString)
                 .collect(Collectors.joining());
 		return stringBase64;
 	}
-	
+
+
 }
