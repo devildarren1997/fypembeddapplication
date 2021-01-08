@@ -23,7 +23,6 @@ public class PixelExtensionEmbed {
     private static int height = 0;
     private static int[][] newValues = null;
     private static int minBright = 100;
-    private static int length = 4;
     private static String binaryToBeEmbed;
     private String encryptedInformation;
     private String ImageInputBase64;
@@ -65,15 +64,9 @@ public class PixelExtensionEmbed {
         newValues = new int[width][height];
         binaryToBeEmbed = convertStringToBinary(encryptedInformation);
         
-//       try 
-//       {
-//    	   ImageIO.write(loadImage, "jpg", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/original.jpg"));
-//       }catch(IOException e) {
-//    	   exceptionMessage.add(e.getMessage());
-//       }
         
         if(loadImage.equals(null)) {
-        	errorMessage.add("Error 100. Fail to get Image input in PixelExtension");
+        	errorMessage.add("Error 303. Fail to get Image input for PixelExtension");
         }
         
         distort(loadImage, binaryToBeEmbed);
@@ -88,7 +81,7 @@ public class PixelExtensionEmbed {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         
         try {
-//        	ImageIO.write(loadImage, "png", new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/ImageSampleGlitch.png"));
+
             ImageIO.write(loadImage, "png", outputStream);
             byte[] imageBytes = outputStream.toByteArray();
             imageString = new String(Base64.getEncoder().encode(imageBytes),"UTF-8");
@@ -97,19 +90,17 @@ public class PixelExtensionEmbed {
         catch(IOException e){
         	exceptionMessage.add(e.getMessage());
         }
+        
+        if(imageString == null) {
+        	errorMessage.add("Error code 303. Fail to apply Pixel Extension watermark to your image");
+        }
         return imageString;
     }
     
     public String PixelExtensionExtraction() {
     	BufferedImage loadImage = null;
     	loadImage = convertBase64ToImage(embeddedImageBase64);
-//    	try {
-//    		ImageIO.write(loadImage, "png", new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/ImageSampleGlitchExtract.png"));
-//    	}
-//    	catch(IOException e){
-//    		System.out.println(e);
-//    	}
-    	
+
     	width = loadImage.getWidth();
         height = loadImage.getHeight();
         String binaryString = "";
@@ -158,28 +149,27 @@ public class PixelExtensionEmbed {
                 }// j != 0
             }// j loop
         }// i loop
-//        System.out.println("This is the binaryString: " + binaryString);
+
         if(binaryString.length() < 10 || binaryString == null) {
-        	errorMessage.add("Error 101. Fail to get the binaryString embedded into the image.");
-//        	System.out.println("we return null");
-        	return "0";
+        	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
+
+        	return "Error404";
         }
         else if(binaryString.length() == 192 || binaryString.length() == 352) {
         	String convertedBinary = convertBinaryToString(binaryString);
             return convertedBinary;
         }
         else {
-        	errorMessage.add("Error 102. Fail to get complete binaryString embedded into the image.");
-//        	System.out.println("we return error");
-        	return "Error102";
+        	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
+
+        	return "Error404";
         }
         
     }
     
     
     public static void distort(BufferedImage image, String binaryToEmbed) {
-//        int count = 0;
-//        int max = 10;
+
         int counti = 0;
         String binaryNeedsToEmbed = binaryToEmbed;
 

@@ -480,7 +480,7 @@ public class uploadImageForEmbedded {
                         errorMessage.add("Error code 401. Fail to extract information");
                     }
                     else {
-                    	if(extractedString.equalsIgnoreCase("error102")) {
+                    	if(extractedString.equalsIgnoreCase("error404")) {
                     		jsonOutPut.put("status","f");
                             errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
                     	}
@@ -528,7 +528,7 @@ public class uploadImageForEmbedded {
                         errorMessage.add("Error code 401. Fail to extract information");
                     }
                     else {
-                    	if(extractedString.equalsIgnoreCase("error102")){
+                    	if(extractedString.equalsIgnoreCase("error404")){
                 			jsonOutPut.put("status","f");
                             errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
                 		}
@@ -548,7 +548,7 @@ public class uploadImageForEmbedded {
                     }
                 }
             	else {
-            		if(extractedString.equalsIgnoreCase("error102")){
+            		if(extractedString.equalsIgnoreCase("error404")){
             			jsonOutPut.put("status","f");
                         errorMessage.add("Error code 404. Fail to get complete binaryString embedded into the image.");
             		}

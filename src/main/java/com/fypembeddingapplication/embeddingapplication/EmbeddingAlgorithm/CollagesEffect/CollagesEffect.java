@@ -61,7 +61,7 @@ public class CollagesEffect {
 	   
 	    
 	    if(loadImage.equals(null)) {
-        	errorMessage.add("Error 100. Fail to get Image input in PixelExtension" );
+        	errorMessage.add("Error 303. Fail to get Image input for PixelExtension");
         }
 	    
 	    Image img = loadImage.getScaledInstance(loadImage.getWidth(), loadImage.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -93,7 +93,7 @@ public class CollagesEffect {
         		}
         		
         		imgs[i] = subOutImage;
-//            ImageIO.write(imgs[i], "png", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/img"+i+".png"));
+
         }
 	    
 	    BufferedImage finalImg = new BufferedImage(loadImage.getWidth(),loadImage.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -133,17 +133,11 @@ public class CollagesEffect {
             }
     	}
     	
-//    	for(int i = 0; i < finalImg.getWidth(); i++) {
-//        	Color checking = new Color(finalImg.getRGB(i, 0));
-//	        int blue = checking.getBlue();
-//	        System.out.println("This is the blue RGB: " + blue + " when i = " + i);
-//        }
-    	
+
     	String imageString = null;
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     	
         try {
-//        	ImageIO.write(finalImg, "png", new File("C:/Users/Darren/OneDrive/Pictures/Screenshots/finalImg.png"));
         	ImageIO.write(finalImg, "png", outputStream);
         	byte[] imageBytes = outputStream.toByteArray();
         	imageString = new String(Base64.getEncoder().encode(imageBytes),"UTF-8");
@@ -151,6 +145,10 @@ public class CollagesEffect {
         }
         catch(IOException e) {
         	exceptionMessage.add(e.getMessage());
+        }
+        
+        if(imageString == null) {
+        	errorMessage.add("Error code 303. Fail to apply Collages Effect watermark to your image");
         }
         
         return imageString;
@@ -177,18 +175,18 @@ public class CollagesEffect {
         }
     	
     	if(binaryString.length() < 10 || binaryString == null) {
-        	errorMessage.add("Error 101. Fail to get the binaryString embedded into the image.");
+        	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
 //        	System.out.println("we return null");
-        	return "0";
+        	return "Error404";
         }
         else if(binaryString.length() == 192 || binaryString.length() == 352) {
         	String convertedBinary = convertBinaryToString(binaryString);
             return convertedBinary;
         }
         else {
-        	errorMessage.add("Error 102. Fail to get complete binaryString embedded into the image.");
+        	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
 //        	System.out.println("we return error");
-        	return "Error102";
+        	return "Error404";
         }
 	}
 	
