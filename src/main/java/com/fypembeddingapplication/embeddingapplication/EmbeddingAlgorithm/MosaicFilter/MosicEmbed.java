@@ -91,7 +91,7 @@ public class MosicEmbed {
         }
         return Pixels;
     }
-    public static int[] convertToPixels(Image img) {
+    public int[] convertToPixels(Image img) {
         int width = img.getWidth(null);
         int height = img.getHeight(null);
         int[] pixel = new int[width * height];
@@ -100,9 +100,11 @@ public class MosicEmbed {
         try {
             pg.grabPixels();
         } catch (InterruptedException e) {
+            getExceptionMessage().add(e.getMessage());
             throw new IllegalStateException("Error: Interrupted Waiting for Pixels");
         }
         if ((pg.getStatus() & ImageObserver.ABORT) != 0) {
+            getExceptionMessage().add("Error: Image Fetch Aborted");
             throw new IllegalStateException("Error: Image Fetch Aborted");
         }
         return pixel;
@@ -131,7 +133,6 @@ public class MosicEmbed {
             int ascii=Integer.parseInt(binaryChar.toString(),2);
             result.append((char)ascii);
 
-
         }
         return result.toString();
     }
@@ -142,12 +143,6 @@ public class MosicEmbed {
         Graphics2D bGr = bimage.createGraphics();
         bGr.drawImage(image, 0, 0, null);
         bGr.dispose();
-
-//        File outputPencilFilter=new File("src/main/java/com/fypembeddingapplication/embeddingapplication/EmbeddingAlgorithm/input7MosicOut.png");
-//        try{
-//            ImageIO.write(bimage,"png",outputPencilFilter);
-//        }
-//        catch (IOException e){exceptionMessage.add(e.getMessage());}
 
         String imageString = null;
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -184,7 +179,6 @@ public class MosicEmbed {
 
     }
     public filterInput converBase64ToPixels (String URLImageBase64){
-//        String imageBase64 =URLImageBase64.substring(URLImageBase64.lastIndexOf(",")+1);
         byte[] decodedBytes= Base64.getDecoder().decode(URLImageBase64);
         Image image=null;
         try{
@@ -193,7 +187,6 @@ public class MosicEmbed {
             inputStream.close();
         }
         catch (IOException e){
-//            throw new IllegalStateException(e.getMessage());
             exceptionMessage.add(e.getMessage());
         }
         filterInput filterInput =null;

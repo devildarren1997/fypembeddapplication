@@ -327,7 +327,7 @@ public class uploadImageForEmbedded {
             }catch (Exception e){
                 exceptionMessage.add(e.getMessage());
             }
-            if (!tempRepository.findByUserId(id).isPresent()){
+            if (tempRepository.findByUserId(id).isPresent()){
                 jsonOutPut.put("status","f");
                 errorMessage.add("Error Code 307.Fail to cancel the embedding process.");
             }
