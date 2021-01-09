@@ -3,15 +3,10 @@ import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.Mosai
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.PencilPaintFilter.PencilPaintEmbed;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.PixelExtension.PixelExtensionEmbed;
 import com.fypembeddingapplication.embeddingapplication.EmbeddingAlgorithm.CollagesEffect.CollagesEffect;
+import com.fypembeddingapplication.embeddingapplication.database.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import com.fypembeddingapplication.embeddingapplication.database.EmbeddedDetailsRepository;
-import com.fypembeddingapplication.embeddingapplication.database.EmbeddedImageRepository;
-import com.fypembeddingapplication.embeddingapplication.database.OriginalImageRepository;
-import com.fypembeddingapplication.embeddingapplication.database.UserRepository;
-import com.fypembeddingapplication.embeddingapplication.database.EncryptionDetailsRepository;
-import com.fypembeddingapplication.embeddingapplication.database.TempRepository;
 import com.fypembeddingapplication.embeddingapplication.model.embeddedDetails;
 import com.fypembeddingapplication.embeddingapplication.model.embeddedImage;
 import com.fypembeddingapplication.embeddingapplication.model.User;
@@ -56,6 +51,176 @@ public class uploadImageForEmbedded {
         JsonOutput.getJson().setBody(body);
         return JsonOutput.getJson();
     }
+//    @Transactional(rollbackFor = Exception.class)
+//    @PostMapping("/getBufferEmbeddedImage")
+//    @ResponseBody
+//    public Map<String, Object> getBufferEmbeddedImage(@RequestBody String allParams){
+//        ObjectMapper mapper = new ObjectMapper();
+//        String jsonString=allParams;
+//        ArrayList<String> errorMessage = new ArrayList<>();
+//        ArrayList<String> exceptionMessage = new ArrayList<>();
+//        JsonCustomized<String,Object> jsonOutPut =new JsonCustomized<>();
+//        try{
+//            requestForEmbeddedImageID request = mapper.readValue(jsonString, requestForEmbeddedImageID.class);
+//            Long userId = request.getUserId();
+//            String imageBase64 =request.getImageBase64();
+//            String filter = request.getFilter();
+//            String secondaryPassword= request.getSecondaryPassword();
+//            String embedText = request.getEmbedText();
+//            Timestamp timestamp=new Timestamp(System.currentTimeMillis());
+//            String imageName= request.getName() +"_" +timestamp.toString();
+//            ImageCompress compress = new ImageCompress();
+//            if (bufferRepository.findByUserId(userId).isPresent()){
+//                try {
+//                    bufferRepository.deleteAllByUserId(userId);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    exceptionMessage.add(e.getMessage());
+//                }
+//            }
+//            String embeddedInformation=embedText;
+//            ASEEncryption encryption = new ASEEncryption();
+//            String encryptKey;
+//            String encryptedInformation;
+//            if (secondaryPassword!=null){
+//                encryptKey=null; //if got secondary password, encryptkey is secondary password
+//                encryptedInformation = encryption.encrypt(embeddedInformation,secondaryPassword);//user secondaryPassword for encryption
+//            }else {
+//                encryptKey=encryption.getRandomEncryptKey();
+//                encryptedInformation = encryption.encrypt(embeddedInformation,encryptKey);
+//            }
+//            if(encryption.getErrorMessage().size()>0){
+//                jsonOutPut.put("status","f");
+//                errorMessage.addAll(encryption.getErrorMessage());
+//            }
+//            if (encryption.getExceptionMessage().size()>0){
+//                exceptionMessage.addAll(encryption.getExceptionMessage());
+//            }
+//            if (encryptedInformation==null){
+//                jsonOutPut.put("status","f");
+//                errorMessage.add("Error Code 302. Fail to encrypt your information. You may consider to change your watermark info");
+//            }
+//            String imageCompressedOut=null;
+//            String imageOutPut=null;
+//
+//            if (filter.equalsIgnoreCase("fragment")){
+//                MosicEmbed mosicEmbed = new MosicEmbed(encryptedInformation,imageBase64);
+//                imageOutPut = mosicEmbed.embedding();
+//                imageCompressedOut=compress.compress(imageOutPut);
+//                if (imageCompressedOut==null&&imageOutPut!=null){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.add("Error Code 305. Fail to generator a review image");
+//                }
+//                if(mosicEmbed.getExceptionMessage().size()>0){
+//                    jsonOutPut.put("status","f");
+//                    exceptionMessage.addAll(mosicEmbed.getExceptionMessage());
+//                }
+//                if (mosicEmbed.getErrorMessage().size()>0){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.addAll(mosicEmbed.getErrorMessage());
+//                }
+//                String embeddedImageName = imageName + "_" + filter+ "_embedded";
+//                try {
+//                    tempTable tempTable = new tempTable(userId,imageName,imageBase64,imageCompressBase64,embeddedImageName,filter,imageOutPut,imageCompressedOut,encryptKey,encryptedInformation);
+//                    tempRepository.save(tempTable);
+//                    jsonOutPut.put("status","s");
+//                    jsonOutPut.put("embeddedImage",imageCompressedOut);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    exceptionMessage.add(e.getMessage());
+//                }
+//            }
+//            else if (filter.equalsIgnoreCase("pencil")){
+//                PencilPaintEmbed pencilPaintEmbed = new PencilPaintEmbed(imageBase64,"PNG");
+//                imageOutPut = pencilPaintEmbed.embedded(encryptedInformation);
+//                imageCompressedOut = compress.compress(imageOutPut);
+//                if (imageCompressedOut==null&&imageOutPut!=null){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.add("Error Code 305. Fail to generator a review image");
+//                }
+//                if(pencilPaintEmbed.getExceptionMessage().size()>0){
+//                    exceptionMessage.addAll(pencilPaintEmbed.getExceptionMessage());
+//                }
+//                if (pencilPaintEmbed.getErrorMessage().size()>0){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.addAll(pencilPaintEmbed.getErrorMessage());
+//                }
+//                String embeddedImageName = imageName + "_" + filter+ "_embedded";
+//                try {
+//                    tempTable tempTable = new tempTable(userId,imageName,imageBase64,imageCompressBase64,embeddedImageName,filter,imageOutPut,imageCompressedOut,encryptKey,encryptedInformation);
+//                    tempRepository.save(tempTable);
+//                    jsonOutPut.put("status","s");
+//                    jsonOutPut.put("embeddedImage",imageCompressedOut);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    exceptionMessage.add(e.getMessage());
+//                }
+//            }
+//            else if (filter.equalsIgnoreCase("pixelextension")) {
+//                PixelExtensionEmbed pixelExtensionEmbed = new PixelExtensionEmbed(encryptedInformation, imageBase64);
+//                imageOutPut = pixelExtensionEmbed.PixelExtension();
+//                imageCompressedOut = compress.compress(imageOutPut);
+//                if(imageCompressedOut==null && imageOutPut!=null) {
+//                    jsonOutPut.put("status", "f");
+//                    errorMessage.add("Error Code 305. Fail to generate a review image");
+//                }
+//                if(pixelExtensionEmbed.getExceptionMessage().size()>0) {
+//                    exceptionMessage.addAll(pixelExtensionEmbed.getExceptionMessage());
+//                }
+//                if (pixelExtensionEmbed.getErrorMessage().size()>0){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.addAll(pixelExtensionEmbed.getErrorMessage());
+//                }
+//                String embeddedImageName = imageName + "_" + filter+ "_embedded";
+//                try {
+//                    tempTable tempTable = new tempTable(userId,imageName,imageBase64,imageCompressBase64,embeddedImageName,filter,imageOutPut,imageCompressedOut,encryptKey,encryptedInformation);
+//                    tempRepository.save(tempTable);
+//                    jsonOutPut.put("status","s");
+//                    jsonOutPut.put("embeddedImage",imageCompressedOut);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    exceptionMessage.add(e.getMessage());
+//                }
+//            }
+//            else if(filter.equalsIgnoreCase("collageseffect")) {
+//                CollagesEffect collagesEffect = new CollagesEffect(encryptedInformation, imageBase64);
+//                imageOutPut = collagesEffect.Collages();
+//                imageCompressedOut = compress.compress(imageOutPut);
+//                if(imageCompressedOut==null && imageOutPut!=null) {
+//                    jsonOutPut.put("status", "f");
+//                    errorMessage.add("Error Code 305. Fail to generate a review image");
+//                }
+//                if(collagesEffect.getExceptionMessage().size()>0) {
+//                    exceptionMessage.addAll(collagesEffect.getExceptionMessage());
+//                }
+//                if (collagesEffect.getErrorMessage().size()>0){
+//                    jsonOutPut.put("status","f");
+//                    errorMessage.addAll(collagesEffect.getErrorMessage());
+//                }
+//
+//                String embeddedImageName = imageName + "_" + filter+ "_embedded";
+//                try {
+//                    tempTable tempTable = new tempTable(userId,imageName,imageBase64,imageCompressBase64,embeddedImageName,filter,imageOutPut,imageCompressedOut,encryptKey,encryptedInformation);
+//                    tempRepository.save(tempTable);
+//                    jsonOutPut.put("status","s");
+//                    jsonOutPut.put("embeddedImage",imageCompressedOut);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                    exceptionMessage.add(e.getMessage());
+//                }
+//            }
+//        }
+//        catch (JsonParseException e) { e.printStackTrace();exceptionMessage.add(e.getMessage());}
+//        catch (JsonMappingException e) { e.printStackTrace(); exceptionMessage.add(e.getMessage());}
+//        catch (IOException e) { e.printStackTrace(); exceptionMessage.add(e.getMessage());}
+//        if(errorMessage.size()!=0||exceptionMessage.size()!=0){
+//            jsonOutPut.put("status","f");
+//        }
+//        jsonOutPut.put("error",errorMessage);
+//        jsonOutPut.put("exception",exceptionMessage);
+//        return jsonOutPut.returmMap();
+//
+//    }
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/getTempEmbeddedImage")
     @ResponseBody
