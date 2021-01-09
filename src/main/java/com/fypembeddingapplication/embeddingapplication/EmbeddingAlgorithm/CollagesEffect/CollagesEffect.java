@@ -176,7 +176,6 @@ public class CollagesEffect {
     	
     	if(binaryString.length() < 10 || binaryString == null) {
         	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
-//        	System.out.println("we return null");
         	return "Error404";
         }
         else if(binaryString.length() == 192 || binaryString.length() == 352) {
@@ -185,7 +184,6 @@ public class CollagesEffect {
         }
         else {
         	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
-//        	System.out.println("we return error");
         	return "Error404";
         }
 	}
