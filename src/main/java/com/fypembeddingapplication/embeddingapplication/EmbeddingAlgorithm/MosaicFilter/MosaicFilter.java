@@ -40,7 +40,12 @@ public class MosaicFilter {
     public final static int TRIANGULAR = 4;
     private float edgeThickness = 0.4f;
     private ArrayList<Integer> embeddedList;
-    public MosaicFilter(ArrayList<Integer> embeddedList) {
+    public MosaicFilter(ArrayList<Integer> embeddedList,int weight,int height) {
+        if (weight>height){
+            scale=weight/20;
+        }else {
+            scale=height/20;
+        }
         results = new Point[3];
         for (int j = 0; j < results.length; j++)
             results[j] = new Point();

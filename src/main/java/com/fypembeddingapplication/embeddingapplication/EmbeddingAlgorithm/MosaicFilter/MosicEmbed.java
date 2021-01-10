@@ -202,7 +202,7 @@ public class MosicEmbed {
     public String embedding (){
         String URLImageBase64 =getURLImageBase64();
         filterInput input = converBase64ToPixels(URLImageBase64);
-        MosaicFilter mosaicFilter=new MosaicFilter(getEmbeddedList(embeddedInformation));
+        MosaicFilter mosaicFilter=new MosaicFilter(getEmbeddedList(embeddedInformation),input.getWidth(),input.getHeight());
         int pixelsMosaicFilter[]= mosaicFilter.filter(input.getInPixles(),input.getWidth(),input.getHeight());
         if (pixelsMosaicFilter==null){
             errorMessage.add("Error code 304. Your watermark information is too long");
