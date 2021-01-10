@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 @Entity
-@Table(name = "fypuser")
+@Table(name = "user")
 @AllArgsConstructor
 @EqualsAndHashCode
 @Getter
@@ -21,7 +21,7 @@ import java.util.HashMap;
 public class User{
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "user_id")
     private Long Id;
     @NotBlank
     @Column(name = "user_name")
@@ -32,25 +32,19 @@ public class User{
     @NotBlank
     @Column(name = "password")
     private String password;
-    @NotBlank
-    @Column(name = "default_digital_watermark")
-    private String defaultDigitalWatermark;
     @Column(name = "enabled")
     private Boolean enabled = false;
     @Column(name = "changing")
     private Boolean changing = false;
-    @Column(name = "role")
-    private String role = "USER";
     @Column(name = "token")
     private String token;
     public User(){
         super();
     }
-    public User(String email,String username,String password,String defaultDigitalWatermark){
+    public User(String email,String username,String password){
         this.email=email;
         this.userName = username;
         this.password=password;
-        this.defaultDigitalWatermark=defaultDigitalWatermark;
     }
 
     public Boolean getEnabled() {
@@ -92,13 +86,6 @@ public class User{
         this.password = password;
     }
 
-    public String getDefaultDigitalWatermark() {
-        return defaultDigitalWatermark;
-    }
-
-    public void setDefaultDigitalWatermark(String defaultDigitalWatermark) {
-        this.defaultDigitalWatermark = defaultDigitalWatermark;
-    }
     public String getUsername(){
         return email;
     }

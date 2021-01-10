@@ -37,9 +37,9 @@ public class UserService{
                 return 2;
             }
         }else {
-           User user = new User(email,username,encryptedPassword,username);
+           User user = new User(email,username,encryptedPassword);
            userRepository.save(user);
-           ConfirmationToken confirmationToken = new ConfirmationToken(email);
+           ConfirmationToken confirmationToken = new ConfirmationToken(email,user.getId());
            confirmationTokenService.saveConfirmationToken(confirmationToken);
            int sendEmailIndicator=sendConfirmationMail(email,confirmationToken.getConfirmationToken(),1);
            if (sendEmailIndicator==1){
@@ -120,7 +120,7 @@ public class UserService{
     public int forgetPassword (String email){
         Optional <User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()){
-            ConfirmationToken confirmationToken = new ConfirmationToken(optionalUser.get().getEmail());
+            ConfirmationToken confirmationToken = new ConfirmationToken(optionalUser.get().getEmail(),optionalUser.get().getId());
             confirmationTokenService.saveConfirmationToken(confirmationToken);
             int emailIndicator=sendConfirmationMail(email,confirmationToken.getConfirmationToken(),2);
             if (emailIndicator==1){

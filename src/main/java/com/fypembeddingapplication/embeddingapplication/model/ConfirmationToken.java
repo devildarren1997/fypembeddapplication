@@ -19,10 +19,12 @@ public class ConfirmationToken {
     private LocalDateTime expiredDatetime;
     @Column(name = "email")
     private String email;
+    @Column(name = "user_id")
+    private Long userId;
 
-   public ConfirmationToken(String email){
+   public ConfirmationToken(String email,Long userId){
         this.email =email;
-
+        this.userId=userId;
         this.expiredDatetime =LocalDateTime.now().plusMinutes(5);
         System.out.println(expiredDatetime);
         this.confirmationToken = generateToken();
@@ -60,6 +62,14 @@ public class ConfirmationToken {
 
     public void setEmail(String userId) {
         this.email = userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
     public String generateToken(){
