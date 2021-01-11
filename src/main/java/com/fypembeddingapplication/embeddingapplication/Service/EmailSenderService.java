@@ -30,7 +30,7 @@ public class EmailSenderService {
             MimeMessageHelper messageHelper = new MimeMessageHelper(mailMessage, true);
             messageHelper.setTo(userMail);
             messageHelper.setSubject("Mail Confirmation Link!");
-            messageHelper.setText("Thank you for registering. Please enter below token in the application to activate your account:" + token );
+            messageHelper.setText("Thank you for registering. Please enter below token in the application to activate your account:" + token  + "  The token will expire after 5 minutes.");
             javaMailSender.send(mailMessage);
             return 1;
         }catch (MessagingException e){
