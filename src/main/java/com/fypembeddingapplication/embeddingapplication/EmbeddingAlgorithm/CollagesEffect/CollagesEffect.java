@@ -175,8 +175,8 @@ public class CollagesEffect {
         }
     	
     	if(binaryString.length() < 10 || binaryString == null) {
-        	errorMessage.add("Error 404. Fail to get complete binary String embedded into the image.");
-        	return "Error404";
+        	errorMessage.add("Error code 403. You may enter a wrong secondary password or select wrong image effect for extraction");
+        	return "Error403";
         }
         else if(binaryString.length() == 192 || binaryString.length() == 352) {
         	String convertedBinary = convertBinaryToString(binaryString);
