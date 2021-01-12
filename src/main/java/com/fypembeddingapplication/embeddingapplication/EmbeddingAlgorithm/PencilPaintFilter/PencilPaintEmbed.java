@@ -304,18 +304,27 @@ public class PencilPaintEmbed {
         return list;
     }
 
-    public static String convertBinaryToStr(int[] array){
-        StringBuilder result= new StringBuilder();
-        for (int i =0 ; i<array.length;i=i+8){
-            StringBuilder binaryChar = new StringBuilder();
+    public  String convertBinaryToStr(int[] array){
+
+        try{
+            StringBuilder result= new StringBuilder();
+            for (int i =0 ; i<array.length;i=i+8){
+                StringBuilder binaryChar = new StringBuilder();
 
                 for (int x=0;x<8;x++){
                     binaryChar.append(array[i+x]);
                 }
                 int ascii=Integer.parseInt(binaryChar.toString(),2);
                 result.append((char)ascii);
+
+            }
+            return result.toString();
+        }catch (Exception e){
+            this.exceptionMessage.add(e.getMessage());
+            return null;
         }
-        return result.toString();
+
+
     }
     public String converPixelsToBase64(int[] outputPixles, int height, int width){
         MemoryImageSource ims = new MemoryImageSource(width,height, outputPixles, 0, width);
