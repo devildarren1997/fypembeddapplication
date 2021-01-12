@@ -343,7 +343,7 @@ public class uploadImageForEmbedded {
                 }else {
                     ASEEncryption aseEncryption = new ASEEncryption();
                     String hiddenInformation = aseEncryption.decrypt(extractedString,secondaryPassword);
-                    if (hiddenInformation==null){
+                    if (hiddenInformation==null||hiddenInformation.isEmpty()){
                         jsonOutPut.put("status","f");
                         errorMessage.add("Error code 403. You may enter a wrong secondary password or select wrong image effect for extraction");
                     }else {
