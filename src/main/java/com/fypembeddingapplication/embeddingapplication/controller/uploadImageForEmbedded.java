@@ -69,12 +69,14 @@ public class uploadImageForEmbedded {
             ASEEncryption encryption = new ASEEncryption();
             String encryptKey;
             String encryptedInformation;
-            if (secondaryPassword!=null){
+            if (secondaryPassword!=""){
                 encryptKey=null; //if got secondary password, encryptkey is secondary password
                 encryptedInformation = encryption.encrypt(embeddedInformation,secondaryPassword);//user secondaryPassword for encryption
             }else {
                 encryptKey=encryption.getRandomEncryptKey();
+                System.out.println(encryptKey);
                 encryptedInformation = encryption.encrypt(embeddedInformation,encryptKey);
+                System.out.println(embeddedInformation);
             }
             if(encryption.getErrorMessage().size()>0){
                 jsonOutPut.put("status","f");
@@ -284,7 +286,7 @@ public class uploadImageForEmbedded {
             if (filter.equalsIgnoreCase("pencil")){
                     PencilPaintEmbed pencilPaintEmbed = new PencilPaintEmbed();
                     String extractedString = pencilPaintEmbed.extract(embeddedImage);
-                    if (secondaryPassword==null){
+                    if (secondaryPassword==""){
                         Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                         if (!retrieveEmbeddedDetails.isPresent()){
                             jsonOutPut.put("status","f");
@@ -298,6 +300,8 @@ public class uploadImageForEmbedded {
                                 jsonOutPut.put("status","f");
                                 errorMessage.add("Error code 402. Enter your secondary password");
                             }else {
+                                System.out.println(extractedString);
+                                System.out.println(encryptionKey);
                                 String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
                                 jsonOutPut.put("status","s");
                                 jsonOutPut.put("hiddenInformation",hiddenInformation);
@@ -321,7 +325,7 @@ public class uploadImageForEmbedded {
             else if (filter.equalsIgnoreCase("fragment") ){
                 MosicEmbed mosicEmbed = new MosicEmbed(embeddedImage);
                 String extractedString = mosicEmbed.extraction();
-                if (secondaryPassword==null){
+                if (secondaryPassword==""){
                     Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
@@ -335,6 +339,8 @@ public class uploadImageForEmbedded {
                             jsonOutPut.put("status","f");
                             errorMessage.add("Error code 402. Enter your secondary password");
                         }else {
+                            System.out.println(extractedString);
+                            System.out.println(encryptionKey);
                             String hiddenInformation = aseEncryption.decrypt(extractedString,encryptionKey);
                             jsonOutPut.put("status","s");
                             jsonOutPut.put("hiddenInformation",hiddenInformation);
@@ -356,7 +362,7 @@ public class uploadImageForEmbedded {
             	PixelExtensionEmbed pixelExtensionEmbed = new PixelExtensionEmbed(embeddedImage);
             	String extractedString = pixelExtensionEmbed.PixelExtensionExtraction();
             	
-            	if (secondaryPassword==null){
+            	if (secondaryPassword==""){
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
@@ -404,7 +410,7 @@ public class uploadImageForEmbedded {
             	CollagesEffect collagesEffect = new CollagesEffect(embeddedImage);
             	String extractedString = collagesEffect.CollageExtraction();
             	
-            	if (secondaryPassword==null){
+            	if (secondaryPassword==""){
                     final Optional<List<encryptionDetail>> retrieveEmbeddedDetails =encryptionDetailsRepository.findByUserIdAndEncryptedString(userId,extractedString);
                     if (!retrieveEmbeddedDetails.isPresent()){
                         jsonOutPut.put("status","f");
